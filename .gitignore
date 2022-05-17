@@ -1,0 +1,13 @@
+media/**
+!media/.gitkeep
+accounts/migrations/**
+inventory/migrations/**
+administrator/migrations/**
+dashboard/migrations/**
+sales/migrations/**
+*.pyc
+!__init__.cpython-38.pyc
+!__init__.py
+!__pycache__/
+db.sqlite3
+.env
