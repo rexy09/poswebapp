@@ -9,6 +9,10 @@ urlpatterns = [
          name="get_product_categories"),
     path("add/product/category", reactjs_apis.add_product_category,
          name="add_product_category"),
+    path("edit/product/category", reactjs_apis.edit_product_category,
+         name="edit_product_category"),
+    path("delete/product/category", reactjs_apis.delete_product_category,
+         name="delete_product_category"),
     path("get/products", reactjs_apis.get_products,
          name="get_products"),
 ]

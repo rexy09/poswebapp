@@ -28,7 +28,6 @@ def get_product_categories(request):
 # @permission_classes([IsAuthenticated])
 def add_product_category(request):
     if request.method == "POST":
-        # data = json.loads(request.data)
         data = request.data
         
         try:
@@ -40,7 +39,6 @@ def add_product_category(request):
 
         return Response(response)
     else:
-        # res = {'status': 'failed'}
         response = {}
         return Response(response)
 
@@ -49,17 +47,20 @@ def add_product_category(request):
 # @permission_classes([IsAuthenticated])
 def edit_product_category(request):
     if request.method == "POST":
-        data = json.loads(request.data)
+        data = request.data
+        
+        try:
+            product_category = ProductCategory.objects.filter(
+                id=data['id']).first()
+            product_category.name = data['name']
+            product_category.save()
+            response = {'status': 'sucess'}
+        except:
+            response = {'status': 'error'}
 
-        product_category = ProductCategory.objects.filter(
-            id=data['id']).update(name=data['name'])
-
-        res = {'sucess': True}
-        response = json.dumps(res)
         return Response(response)
     else:
-        res = {'sucess': False}
-        response = json.dumps(res)
+        response = {}
         return Response(response)
 
 
@@ -67,17 +68,19 @@ def edit_product_category(request):
 # @permission_classes([IsAuthenticated])
 def delete_product_category(request):
     if request.method == "POST":
-        data = json.loads(request.data)
+        data = request.data
 
-        product_category = ProductCategory.objects.filter(
-            id=data['id']).delete()
+        try:
+            product_category = ProductCategory.objects.filter(
+                id=data['id']).first()
+            product_category.delete()
+            response = {'status': 'sucess'}
+        except:
+            response = {'status': 'error'}
 
-        res = {'sucess': True}
-        response = json.dumps(res)
         return Response(response)
     else:
-        res = {'sucess': False}
-        response = json.dumps(res)
+        response = {}
         return Response(response)
 
 
