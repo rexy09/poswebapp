@@ -28,20 +28,20 @@ def get_product_categories(request):
 # @permission_classes([IsAuthenticated])
 def add_product_category(request):
     if request.method == "POST":
-        data = json.loads(request.data)
+        # data = json.loads(request.data)
+        data = request.data
+        
         try:
             ProductCategory.objects.create(
                 name=data['name'])
-            res = {'status': 'sucess'}
+            response = {'status': 'sucess'}
         except:
-            res = {'status': 'error'}
+            response = {'status': 'error'}
 
-        response = json.dumps(res)
         return Response(response)
     else:
         # res = {'status': 'failed'}
-        res = {}
-        response = json.dumps(res)
+        response = {}
         return Response(response)
 
 
