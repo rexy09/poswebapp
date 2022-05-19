@@ -39,7 +39,8 @@ def add_product_category(request):
         response = json.dumps(res)
         return Response(response)
     else:
-        res = {'status': 'failed'}
+        # res = {'status': 'failed'}
+        res = {}
         response = json.dumps(res)
         return Response(response)
 
