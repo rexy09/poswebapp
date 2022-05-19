@@ -29,14 +29,17 @@ def get_product_categories(request):
 def add_product_category(request):
     if request.method == "POST":
         data = json.loads(request.data)
+        try:
+            ProductCategory.objects.create(
+                name=data['name'])
+            res = {'status': 'sucess'}
+        except:
+            res = {'status': 'error'}
 
-        product_category = ProductCategory.objects.create(name=data['name'])
-
-        res = {'sucess': True}
         response = json.dumps(res)
         return Response(response)
     else:
-        res = {'sucess': False}
+        res = {'status': 'failed'}
         response = json.dumps(res)
         return Response(response)
 
