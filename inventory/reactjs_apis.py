@@ -106,23 +106,27 @@ def get_products(request):
 # @permission_classes([IsAuthenticated])
 def add_product(request):
     if request.method == "POST":
-        data = json.loads(request.data)
-
-        product = Product.objects.create(
-            category__id=data['category'], name=data['name'],
-            barcode=data['barcode'], brand=data['brand'],
-            specification=data['specification'], description=data['description'],
-            stocked=data['stocked'], min_quantity=data['min_quantity'],
-            wholesale_price=data['wholesale_price'], retail_price=data['retail_price'],
-            image=data['image'], supplier=data['supplier'],
+        data = request.data
+        
+        try:
+            product=Product.objects.create(
+                category__id=data['category'], name=data['name'],
+                barcode=data['barcode'], brand=data['brand'],
+                specification=data['specification'], description=data['description'],
+                min_quantity=data['min_quantity'],
+                wholesale_price=data['wholesale_price'], retail_price=data['retail_price'],
+                image=data['image']
             )
+            for image in data['product_images']:
+                image = ProductImage.objects.create(product=product,
+                                                    image=image['image'])
+            response = {'status': 'sucess'}
+        except:
+            response = {'status': 'error'}
 
-        res = {'sucess': True}
-        response = json.dumps(res)
         return Response(response)
     else:
-        res = {'sucess': False}
-        response = json.dumps(res)
+        response = {}
         return Response(response)
 
 
@@ -130,23 +134,25 @@ def add_product(request):
 # @permission_classes([IsAuthenticated])
 def edit_product(request):
     if request.method == "POST":
-        data = json.loads(request.data)
+        data = request.data
 
-        product = Product.objects.filter(id=data['id']).update(
-            category__id=data['category'], name=data['name'],
-            barcode=data['barcode'], brand=data['brand'],
-            specification=data['specification'], description=data['description'],
-            stocked=data['stocked'], min_quantity=data['min_quantity'],
-            wholesale_price=data['wholesale_price'], retail_price=data['retail_price'],
-            image=data['image'], supplier=data['supplier'],
-        )
+        try:
+            Product.objects.filter(id=data['id']).update(
+                category__id=data['category'], name=data['name'],
+                barcode=data['barcode'], brand=data['brand'],
+                specification=data['specification'], description=data['description'],
+                stocked=data['stocked'], min_quantity=data['min_quantity'],
+                wholesale_price=data['wholesale_price'], retail_price=data['retail_price'],
+                image=data['image']
+            )
 
-        res = {'sucess': True}
-        response = json.dumps(res)
+            response = {'status': 'sucess'}
+        except:
+            response = {'status': 'error'}
+        
         return Response(response)
     else:
-        res = {'sucess': False}
-        response = json.dumps(res)
+        response = {}
         return Response(response)
 
 
@@ -154,14 +160,61 @@ def edit_product(request):
 # @permission_classes([IsAuthenticated])
 def delete_product(request):
     if request.method == "POST":
-        data = json.loads(request.data)
+        data = request.data
 
-        product = Product.objects.filter(id=data['id']).delete()
+        try:
+            product = Product.objects.filter(
+                id=data['id']).first()
+            product.delete()
+            response = {'status': 'sucess'}
+        except:
+            response = {'status': 'error'}
 
-        res = {'sucess': True}
-        response = json.dumps(res)
         return Response(response)
     else:
-        res = {'sucess': False}
-        response = json.dumps(res)
+        response = {}
+        return Response(response)
+
+
+@api_view(['GET', 'POST'])
+# @permission_classes([IsAuthenticated])
+def add_product_images(request):
+    if request.method == "POST":
+        data = request.data
+
+        try:
+            product = Product.objects.filter(
+                id=data['product']).first()
+            for image in data['product_images']:
+                image = ProductImage.objects.create(product=product,
+                                                    image=image['image'])
+            response = {'status': 'sucess'}
+        except:
+            response = {'status': 'error'}
+
+        return Response(response)
+    else:
+        response = {}
+        return Response(response)
+    
+    
+@api_view(['GET', 'POST'])
+# @permission_classes([IsAuthenticated])
+def delete_product_images(request):
+    if request.method == "POST":
+        data = request.data           
+
+        try:
+            for image in data['product_images']:
+                image = ProductImage.objects.filter(product__id=image['product'],
+                    id=image['id']).first()
+                image.image.delete()
+                image.delete()
+            response = {'status': 'sucess'}
+        except:
+            response = {'status': 'error'}
+
+        return Response(response)
+    else:
+        response = {}
         return Response(response)

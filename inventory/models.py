@@ -37,7 +37,6 @@ class Product(models.Model):
 	retail_price = models.DecimalField(
 		max_digits=19, decimal_places=2, default=0)
 	image = models.ImageField(upload_to='products')
-	supplier = models.CharField(max_length=100)
 	updated_at = models.DateTimeField(auto_now=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 
@@ -85,7 +84,7 @@ class ProductImage(models.Model):
 
 	@property
 	def image_url(self):
-		return "{0}".format(self.image.url)
+		return "{0}".format(self.product.name)
 
 	class Meta:
 		verbose_name = "Product Image"
@@ -130,3 +129,17 @@ class Inventory(models.Model):
 	class Meta:
 		verbose_name = 'Inventory'
 		verbose_name_plural = 'Inventories'
+
+
+class Supplier(models.Model):
+	name = models.CharField(max_length=100)
+	updated_at = models.DateTimeField(auto_now=True)
+	created_at = models.DateTimeField(auto_now_add=True)   
+
+	class Meta:
+		ordering = ["name"]
+		verbose_name = ("Supplier")
+		verbose_name_plural = ("Suppliers")
+
+	def __str__(self):
+		return self.name
