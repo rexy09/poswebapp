@@ -117,11 +117,13 @@ def add_product(request):
                 wholesale_price=data['wholesale_price'], retail_price=data['retail_price'],
                 image=data['image']
             )
+            
             for image in data['product_images']:
                 image = ProductImage.objects.create(product=product,
                                                     image=image['image'])
             response = {'status': 'sucess'}
-        except:
+        except Exception as e:
+            print(e)
             response = {'status': 'error'}
 
         return Response(response)
