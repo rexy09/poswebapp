@@ -109,8 +109,10 @@ def add_product(request):
         data = request.data
         
         try:
+            category = ProductCategory.objects.filter(
+                id=data['category']).first()
             product=Product.objects.create(
-                category__id=data['category'], name=data['name'],
+                category=category, name=data['name'],
                 barcode=data['barcode'], brand=data['brand'],
                 specification=data['specification'], description=data['description'],
                 min_quantity=data['min_quantity'],
@@ -139,8 +141,10 @@ def edit_product(request):
         data = request.data
 
         try:
+            category = ProductCategory.objects.filter(
+                id=data['category']).first()
             Product.objects.filter(id=data['id']).update(
-                category__id=data['category'], name=data['name'],
+                category=category, name=data['name'],
                 barcode=data['barcode'], brand=data['brand'],
                 specification=data['specification'], description=data['description'],
                 stocked=data['stocked'], min_quantity=data['min_quantity'],
@@ -149,7 +153,8 @@ def edit_product(request):
             )
 
             response = {'status': 'sucess'}
-        except:
+        except Exception as e:
+            print(e)
             response = {'status': 'error'}
         
         return Response(response)
@@ -169,7 +174,8 @@ def delete_product(request):
                 id=data['id']).first()
             product.delete()
             response = {'status': 'sucess'}
-        except:
+        except Exception as e:
+            print(e)
             response = {'status': 'error'}
 
         return Response(response)
@@ -191,7 +197,8 @@ def add_product_images(request):
                 image = ProductImage.objects.create(product=product,
                                                     image=image['image'])
             response = {'status': 'sucess'}
-        except:
+        except Exception as e:
+            print(e)
             response = {'status': 'error'}
 
         return Response(response)
@@ -213,7 +220,8 @@ def delete_product_images(request):
                 image.image.delete()
                 image.delete()
             response = {'status': 'sucess'}
-        except:
+        except Exception as e:
+            print(e)
             response = {'status': 'error'}
 
         return Response(response)
