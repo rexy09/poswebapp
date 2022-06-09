@@ -9,6 +9,13 @@ import requests
 import json
 
 
+import base64
+from django.core.files.base import ContentFile
+
+from io import BytesIO
+from PIL import Image
+import re
+
 @api_view(['GET', ])
 # @permission_classes([IsAuthenticated])
 def get_product_categories(request):
@@ -107,7 +114,8 @@ def get_products(request):
 def add_product(request):
     if request.method == "POST":
         data = request.data
-        
+        # Added here
+        # print(data)
         try:
             category = ProductCategory.objects.filter(
                 id=data['category']).first()
@@ -137,21 +145,30 @@ def add_product(request):
 @api_view(['GET', 'POST'])
 # @permission_classes([IsAuthenticated])
 def edit_product(request):
+    thumbnail = ''
     if request.method == "POST":
-        data = request.data
 
+        data = request.data
+        file = request.FILES
+
+        print(data['image'])
+        # for f in data['image']:
+        #print(f)
+        # postedimage = re.sub('^data:image/.+;base64,','',data['image'])
+        # convertedThumbnail = Image.open(BytesIO(base64.b64decode(postedimage)))
+        
         try:
             category = ProductCategory.objects.filter(
                 id=data['category']).first()
             Product.objects.filter(id=data['id']).update(
                 category=category, name=data['name'],
                 barcode=data['barcode'], brand=data['brand'],
-                specification=data['specification'], description=data['description'],
-                stocked=data['stocked'], min_quantity=data['min_quantity'],
+                specification=data['specification'],
+                description=data['description'],
+                stocked=data['stocked'],
+                min_quantity=data['min_quantity'],
                 wholesale_price=data['wholesale_price'], retail_price=data['retail_price'],
-                image=data['image']
-            )
-
+                image=data['image'])
             response = {'status': 'sucess'}
         except Exception as e:
             print(e)
