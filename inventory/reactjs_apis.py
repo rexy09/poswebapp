@@ -107,11 +107,12 @@ def get_products(request):
 def add_product(request):
     if request.method == "POST":
         data = request.data
+        print(data)
         
         try:
             category = ProductCategory.objects.filter(
                 id=data['category']).first()
-            product=Product.objects.create(
+            product = Product.objects.create(
                 category=category, name=data['name'],
                 barcode=data['barcode'], brand=data['brand'],
                 specification=data['specification'], description=data['description'],
@@ -119,10 +120,11 @@ def add_product(request):
                 wholesale_price=data['wholesale_price'], retail_price=data['retail_price'],
                 image=data['image']
             )
-            
+            print(data['product_images'])
+            print(type(data['product_images']))
             for image in data['product_images']:
-                image = ProductImage.objects.create(product=product,
-                                                    image=image['image'])
+                ProductImage.objects.create(product=product,image=image)
+                    
             response = {'status': 'sucess'}
         except Exception as e:
             print(e)

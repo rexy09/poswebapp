@@ -19,6 +19,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     product_images = ProductImageSerializer(many=True, read_only=True)
+    # image = serializers.URLField(source="get_image_url", read_only=True)
     class Meta:
         model = Product
         fields = ['id', 'category', 'name', 'barcode', 'brand', 'specification', 'description',
